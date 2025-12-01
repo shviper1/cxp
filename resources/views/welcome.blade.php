@@ -155,7 +155,10 @@
                                         @forelse ($block['cities'] as $city)
                                             <li class="flex items-center gap-2">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span>
-                                                {{ $city->name }}
+                                                <a href="{{ route('posts.create', ['city' => $city->id]) }}"
+                                                   class="hover:text-slate-900 hover:underline transition-colors">
+                                                    {{ $city->name }}
+                                                </a>
                                             </li>
                                         @empty
                                             <li class="text-slate-400">No cities available.</li>
