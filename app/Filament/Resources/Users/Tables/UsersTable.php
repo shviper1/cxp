@@ -2,16 +2,14 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
-use App\Models\User;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -24,82 +22,106 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('email')
                     ->label('Email address')
-                    ->searchable(),
-                // TextColumn::make('email_verified_at')
-                //     ->dateTime()
-                //     ->sortable(),
+                    ->searchable()
+                    ->sortable(),
+                BadgeColumn::make('verification_status')
+                    ->label('Verification')
+                    ->colors([
+                        'success' => 'verified',
+                        'warning' => 'pending',
+                        'danger' => 'rejected',
+                        'gray' => 'unverified',
+                    ])
+                    ->icons([
+                        'heroicon-o-check-circle' => 'verified',
+                        'heroicon-o-clock' => 'pending',
+                        'heroicon-o-x-circle' => 'rejected',
+                        'heroicon-o-question-mark-circle' => 'unverified',
+                    ])
+                    ->sortable(),
+                TextColumn::make('posts_count')
+                    ->label('Posts')
+                    ->counts('posts')
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('verified_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'active' => 'success',
                         'suspended' => 'danger',
-                        'pending' => 'warning',
-                    }),
-                TextColumn::make('roles.name')
-                    ->badge(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                        default => 'gray',
+                    })
+                    ->toggleable(),
+                TextColumn::make('city')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('country')
+                    ->searchable()
+                    ->toggleable(),
             ])
             ->filters([
-                TrashedFilter::make(),
+                SelectFilter::make('verification_status')
+                    ->options([
+                        'unverified' => 'Unverified',
+                        'pending' => 'Pending Review',
+                        'verified' => 'Verified',
+                        'rejected' => 'Rejected',
+                    ]),
                 SelectFilter::make('status')
                     ->options([
                         'active' => 'Active',
                         'suspended' => 'Suspended',
-                        'pending' => 'Pending',
                     ]),
-                SelectFilter::make('roles')
-                    ->relationship('roles', 'name'),
+                TrashedFilter::make(),
             ])
             ->recordActions([
-                EditAction::make(),
-                Action::make('suspend')
-                    ->label('Suspend')
-                    ->color('danger')
-                    ->icon('heroicon-o-no-symbol')
-                    ->visible(fn (User $record) => $record->status === 'active')
-                    ->form([
-                        DateTimePicker::make('suspended_until')
-                            ->required()
-                            ->minDate(now())
-                            ->label('Suspend Until'),
-                    ])
-                    ->action(function (User $record, array $data): void {
-                        $record->update([
-                            'status' => 'suspended',
-                            'suspended_until' => $data['suspended_until'],
-                        ]);
-                    }),
-                Action::make('activate')
-                    ->label('Activate')
-                    ->color('success')
+                Action::make('verify')
+                    ->label('Verify')
                     ->icon('heroicon-o-check-circle')
-                    ->visible(fn (User $record) => $record->status !== 'active')
-                    ->action(function (User $record): void {
+                    ->color('success')
+                    ->visible(fn ($record) => $record->verification_status === 'pending')
+                    ->action(function ($record) {
                         $record->update([
-                            'status' => 'active',
-                            'suspended_until' => null,
+                            'verification_status' => 'verified',
+                            'verified_at' => now(),
                         ]);
                     }),
-                DeleteAction::make(),
-                RestoreAction::make(),
+                Action::make('reject')
+                    ->label('Reject')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->visible(fn ($record) => $record->verification_status === 'pending')
+                    ->action(function ($record) {
+                        $record->update(['verification_status' => 'rejected']);
+                    }),
+                Action::make('view_documents')
+                    ->label('View Documents')
+                    ->icon('heroicon-o-eye')
+                    ->visible(fn ($record) => $record->id_document_path || $record->selfie_path)
+                    ->action(function ($record) {
+                        // This would open a modal to view documents
+                        return redirect()->back();
+                    }),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 }

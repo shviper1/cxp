@@ -10,6 +10,9 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
 
 <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">

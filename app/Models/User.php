@@ -9,6 +9,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
@@ -27,6 +28,21 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'status',
         'suspended_until',
+        'phone',
+        'date_of_birth',
+        'gender',
+        'occupation',
+        'bio',
+        'address',
+        'city',
+        'state',
+        'zip_code',
+        'country',
+        'verification_status',
+        'id_document_path',
+        'selfie_path',
+        'verification_notes',
+        'verified_at',
     ];
 
     /**
@@ -50,6 +66,8 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'suspended_until' => 'datetime',
+            'date_of_birth' => 'date',
+            'verified_at' => 'datetime',
         ];
     }
 
@@ -61,5 +79,25 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->verification_status === 'verified';
+    }
+
+    public function isPendingVerification(): bool
+    {
+        return $this->verification_status === 'pending';
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->verification_status === 'rejected';
     }
 }

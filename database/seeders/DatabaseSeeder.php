@@ -17,14 +17,21 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Create test user only if it doesn't exist
+        if (!User::where('email', 'test@example.com')->exists()) {
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
+        }
 
-        // Generate Shield permissions and roles
+        // Run all available seeders
         $this->call([
             ShieldSeeder::class,
+            TestUserSeeder::class,
+            PostSystemSeeder::class,
+            SiteSettingsSeeder::class,
+            USASeeder::class,
         ]);
     }
 }

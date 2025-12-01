@@ -8,8 +8,10 @@ use App\Models\Country;
 use App\Models\Post;
 use App\Models\Section;
 use App\Models\State;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class HomePageController extends Controller
 {
@@ -90,9 +92,9 @@ class HomePageController extends Controller
         $city = City::find($request->city_id);
         $paymentStatus = $city->isPaid() ? 'pending' : 'free';
 
-        // Create post
+        // Create post (allow anonymous posting)
         $post = Post::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), // Can be null for anonymous posts
             'country_id' => $request->country_id,
             'state_id' => $request->state_id,
             'city_id' => $request->city_id,
@@ -120,6 +122,164 @@ class HomePageController extends Controller
             }
         }
 
-        return redirect()->route('posts.create')->with('message', 'Post submitted successfully! It will be reviewed by our team.');
+        $message = 'Post submitted successfully! It will be reviewed by our team.';
+
+        // If user is logged in, offer to go to dashboard
+        if (Auth::check()) {
+            $message .= ' <a href="' . route('dashboard.posts') . '" class="text-indigo-600 hover:text-indigo-800">Manage your posts</a>';
+        }
+
+        return redirect()->route('posts.create')->with('message', $message);
+    }
+
+    public function dashboard()
+    {
+        $user = Auth::user();
+        $posts = $user ? Post::where('user_id', $user->id)->latest()->paginate(10) : collect();
+
+        return view('dashboard.index', compact('posts'));
+    }
+
+    public function userPosts()
+    {
+        $user = Auth::user();
+        $posts = $user ? Post::where('user_id', $user->id)->latest()->paginate(15) : collect();
+
+        return view('dashboard.posts', compact('posts'));
+    }
+
+    public function profile()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $postsCount = $user->posts()->whereNotNull('user_id')->count();
+        $pendingPosts = $user->posts()->where('status', 'pending')->count();
+        $approvedPosts = $user->posts()->where('status', 'approved')->count();
+        $rejectedPosts = $user->posts()->where('status', 'rejected')->count();
+
+        return view('dashboard.profile', compact(
+            'postsCount',
+            'pendingPosts',
+            'approvedPosts',
+            'rejectedPosts'
+        ));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
+            'phone' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date|before:today',
+            'gender' => 'nullable|in:male,female,other,prefer_not_to_say',
+            'occupation' => 'nullable|string|max:255',
+            'bio' => 'nullable|string|max:1000',
+            'address' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
+            'zip_code' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:255',
+        ]);
+
+        // Only update fields that exist in the database
+        $updateData = [];
+        $allowedFields = ['name', 'email', 'phone', 'date_of_birth', 'gender', 'occupation', 'bio', 'address', 'city', 'state', 'zip_code', 'country'];
+
+        foreach ($allowedFields as $field) {
+            if ($request->has($field)) {
+                $updateData[$field] = $request->input($field);
+            }
+        }
+
+        Auth::user()->update($updateData);
+
+        return redirect()->route('dashboard.profile')->with('message', 'Profile updated successfully!');
+    }
+
+    public function verification()
+    {
+        $user = Auth::user();
+        return view('dashboard.verification', compact('user'));
+    }
+
+    public function submitVerification(Request $request)
+    {
+        $request->validate([
+            'id_document' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'selfie' => 'required|file|mimes:jpg,jpeg,png|max:5120', // 5MB max
+        ]);
+
+        $user = Auth::user();
+
+        // Handle ID document upload
+        if ($request->hasFile('id_document')) {
+            $idPath = $request->file('id_document')->store('verification/id_documents', 'public');
+            $user->id_document_path = $idPath;
+        }
+
+        // Handle selfie upload
+        if ($request->hasFile('selfie')) {
+            $selfiePath = $request->file('selfie')->store('verification/selfies', 'public');
+            $user->selfie_path = $selfiePath;
+        }
+
+        $user->verification_status = 'pending';
+        $user->save();
+
+        return redirect()->route('dashboard.verification')->with('message', 'Verification documents submitted successfully! Our team will review them within 24-48 hours.');
+    }
+
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($request->only(['email', 'password']), $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            return redirect()->intended(route('dashboard.index'))->with('message', 'Welcome back!');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
+    }
+
+    public function showRegistrationForm()
+    {
+        return view('auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'verification_status' => 'unverified',
+        ]);
+
+        Auth::login($user);
+
+        return redirect(route('dashboard.index'))->with('message', 'Account created successfully! Welcome to our platform.');
     }
 }
