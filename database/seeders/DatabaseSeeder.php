@@ -21,5 +21,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Generate Shield permissions and roles
+        $this->call([
+            ShieldSeeder::class,
+        ]);
     }
 }
