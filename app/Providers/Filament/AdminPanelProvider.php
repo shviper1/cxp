@@ -2,6 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\PostStatsWidget;
+use App\Filament\Widgets\RecentActivityWidget;
+use App\Filament\Widgets\UserRegistrationChart;
+use App\Filament\Widgets\UserStatsWidget;
+use App\Filament\Widgets\VerificationStatusChart;
 use App\Http\Middleware\EnsureUserIsActive;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -12,8 +17,6 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -41,8 +44,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                UserStatsWidget::class,
+                PostStatsWidget::class,
+                UserRegistrationChart::class,
+                VerificationStatusChart::class,
+                RecentActivityWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
