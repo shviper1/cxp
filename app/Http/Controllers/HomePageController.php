@@ -126,7 +126,7 @@ class HomePageController extends Controller
 
         // If user is logged in, offer to go to dashboard
         if (Auth::check()) {
-            $message .= ' <a href="' . route('dashboard.posts') . '" class="text-indigo-600 hover:text-indigo-800">Manage your posts</a>';
+            $message .= ' <a href="'.route('dashboard.posts').'" class="text-indigo-600 hover:text-indigo-800">Manage your posts</a>';
         }
 
         return redirect()->route('posts.create')->with('message', $message);
@@ -152,7 +152,7 @@ class HomePageController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login');
         }
 
@@ -173,7 +173,7 @@ class HomePageController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . Auth::id(),
+            'email' => 'required|email|unique:users,email,'.Auth::id(),
             'phone' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date|before:today',
             'gender' => 'nullable|in:male,female,other,prefer_not_to_say',
@@ -204,6 +204,7 @@ class HomePageController extends Controller
     public function verification()
     {
         $user = Auth::user();
+
         return view('dashboard.verification', compact('user'));
     }
 
@@ -248,6 +249,7 @@ class HomePageController extends Controller
 
         if (Auth::attempt($request->only(['email', 'password']), $request->boolean('remember'))) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('dashboard.index'))->with('message', 'Welcome back!');
         }
 
@@ -281,5 +283,88 @@ class HomePageController extends Controller
         Auth::login($user);
 
         return redirect(route('dashboard.index'))->with('message', 'Account created successfully! Welcome to our platform.');
+    }
+
+    public function browsePosts(Request $request)
+    {
+        $query = Post::with(['user', 'country', 'state', 'city', 'section', 'category', 'media'])
+            ->where('status', 'approved');
+
+        // Apply filters
+        if ($request->country) {
+            $query->where('country_id', $request->country);
+        }
+        if ($request->state) {
+            $query->where('state_id', $request->state);
+        }
+        if ($request->city) {
+            $query->where('city_id', $request->city);
+        }
+        if ($request->section) {
+            $query->where('section_id', $request->section);
+        }
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+
+        $posts = $query->latest()->paginate(12);
+
+        // Get filter options
+        $countries = Country::orderBy('name')->get();
+        $sections = Section::orderBy('name')->get();
+
+        return view('posts.index', compact('posts', 'countries', 'sections'));
+    }
+
+    public function showPost(Post $post)
+    {
+        // Only show approved posts to public
+        if ($post->status !== 'approved' && ! Auth::check()) {
+            abort(404);
+        }
+
+        $post->load(['user', 'country', 'state', 'city', 'section', 'category', 'media']);
+
+        return view('posts.show', compact('post'));
+    }
+
+    public function showCountrySections(Country $country)
+    {
+        $sections = Section::with(['categories' => function ($query) use ($country) {
+            $query->whereHas('posts', function ($postQuery) use ($country) {
+                $postQuery->where('country_id', $country->id)
+                    ->where('status', 'approved');
+            });
+        }])->get();
+
+        return view('locations.country', compact('country', 'sections'));
+    }
+
+    public function showSectionCategories(Country $country, Section $section)
+    {
+        $categories = Category::whereHas('posts', function ($query) use ($country, $section) {
+            $query->where('country_id', $country->id)
+                ->where('section_id', $section->id)
+                ->where('status', 'approved');
+        })->withCount(['posts' => function ($query) use ($country, $section) {
+            $query->where('country_id', $country->id)
+                ->where('section_id', $section->id)
+                ->where('status', 'approved');
+        }])->get();
+
+        return view('locations.section', compact('country', 'section', 'categories'));
+    }
+
+    public function showCategoryPosts(Country $country, Section $section, Category $category)
+    {
+        $posts = Post::with(['user', 'country', 'state', 'city', 'section', 'category', 'media'])
+            ->where('country_id', $country->id)
+            ->where('section_id', $section->id)
+            ->where('category_id', $category->id)
+            ->where('status', 'approved')
+            ->latest()
+            ->paginate(12);
+
+        return view('locations.category-posts', compact('country', 'section', 'category', 'posts'));
     }
 }

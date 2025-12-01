@@ -11,15 +11,20 @@ use App\Models\Post;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
+
+    protected static ?string $modelLabel = 'Post';
+
+    protected static ?string $pluralModelLabel = 'Posts';
+
+    protected static ?string $navigationLabel = '📝 Manage Posts';
+
     protected static ?int $navigationSort = 6;
 
-    // protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
 
     protected static ?string $recordTitleAttribute = 'title';

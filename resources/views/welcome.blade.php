@@ -136,9 +136,9 @@
                                 <h3 class="text-2xl font-semibold text-slate-900">{{ $country->name }}</h3>
                                 <p class="text-sm text-slate-500">{{ count($stateBlocks) }} states featured</p>
                             </div>
-                            <a href="{{ route('posts.create') }}"
+                            <a href="{{ route('locations.country', $country) }}"
                                 class="inline-flex items-center rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-900 hover:text-slate-900">
-                                Publish in {{ $country->name }}
+                                Browse {{ $country->name }}
                             </a>
                         </div>
 
@@ -155,7 +155,7 @@
                                         @forelse ($block['cities'] as $city)
                                             <li class="flex items-center gap-2">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span>
-                                                <a href="{{ route('posts.create', ['city' => $city->id]) }}"
+                                                <a href="{{ route('locations.country', $country) }}"
                                                    class="hover:text-slate-900 hover:underline transition-colors">
                                                     {{ $city->name }}
                                                 </a>
