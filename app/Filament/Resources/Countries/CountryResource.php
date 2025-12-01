@@ -17,8 +17,9 @@ use Filament\Tables\Table;
 class CountryResource extends Resource
 {
     protected static ?string $model = Country::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?int $navigationSort = 1;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-globe-alt';
+    
 
     protected static ?string $recordTitleAttribute = 'name';
 

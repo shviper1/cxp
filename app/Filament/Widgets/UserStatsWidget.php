@@ -8,6 +8,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class UserStatsWidget extends BaseWidget
 {
+    protected static ?int $sort = 2;
     protected function getStats(): array
     {
         $totalUsers = User::count();

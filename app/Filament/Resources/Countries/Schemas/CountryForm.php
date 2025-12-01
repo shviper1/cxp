@@ -8,6 +8,7 @@ use Filament\Schemas\Schema;
 
 class CountryForm
 {
+    protected static ?int $sort = 1;
     public static function configure(Schema $schema): Schema
     {
         return $schema

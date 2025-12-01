@@ -9,6 +9,9 @@ use Illuminate\Support\Carbon;
 class UserRegistrationChart extends ChartWidget
 {
     protected ?string $heading = 'User Registrations';
+    protected static ?int $sort = 4;
+
+    protected int|string|array $columnSpan = '1/2';
 
     protected function getData(): array
     {

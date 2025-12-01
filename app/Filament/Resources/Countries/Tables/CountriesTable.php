@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 
 class CountriesTable
 {
+    
     public static function configure(Table $table): Table
     {
         return $table

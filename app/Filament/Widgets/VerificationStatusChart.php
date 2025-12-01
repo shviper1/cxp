@@ -8,6 +8,9 @@ use Filament\Widgets\ChartWidget;
 class VerificationStatusChart extends ChartWidget
 {
     protected ?string $heading = 'User Verification Status';
+    protected static ?int $sort = 5;
+
+    protected int|string|array $columnSpan = '1/2';
 
     protected function getData(): array
     {
