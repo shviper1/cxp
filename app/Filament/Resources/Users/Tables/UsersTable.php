@@ -49,14 +49,18 @@ class UsersTable
                     ->label('Posts')
                     ->counts('posts')
                     ->sortable(),
+                TextColumn::make('roles.name')
+                    ->label('Roles')
+                    ->badge()
+                    ->color('primary')
+                    ->listWithLineBreaks()
+                    ->limitList(2)
+                    ->expandableLimitedList(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('verified_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(),
+
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -65,12 +69,7 @@ class UsersTable
                         default => 'gray',
                     })
                     ->toggleable(),
-                TextColumn::make('city')
-                    ->searchable()
-                    ->toggleable(),
-                TextColumn::make('country')
-                    ->searchable()
-                    ->toggleable(),
+
             ])
             ->filters([
                 SelectFilter::make('verification_status')
@@ -85,6 +84,10 @@ class UsersTable
                         'active' => 'Active',
                         'suspended' => 'Suspended',
                     ]),
+                SelectFilter::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload(),
                 TrashedFilter::make(),
             ])
             ->recordActions([

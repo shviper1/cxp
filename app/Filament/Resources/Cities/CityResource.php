@@ -9,7 +9,6 @@ use App\Filament\Resources\Cities\Schemas\CityForm;
 use App\Filament\Resources\Cities\Tables\CitiesTable;
 use App\Models\City;
 use BackedEnum;
-use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -17,7 +16,6 @@ use Filament\Tables\Table;
 
 class CityResource extends Resource
 {
-    use HasPageShield;
     protected static ?string $model = City::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

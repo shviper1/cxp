@@ -139,6 +139,17 @@ class UserForm
                             ])
                             ->columns(1),
                     ]),
+
+                Section::make('Roles & Permissions')
+                    ->description('Assign roles to this user')
+                    ->schema([
+                        Select::make('roles')
+                            ->multiple()
+                            ->preload()
+                            ->relationship('roles', 'name')
+                            ->label('Roles')
+                            ->helperText('Select one or more roles for this user'),
+                    ]),
             ]);
     }
 }

@@ -9,7 +9,6 @@ use App\Filament\Resources\SiteSettings\Schemas\SiteSettingForm;
 use App\Filament\Resources\SiteSettings\Tables\SiteSettingsTable;
 use App\Models\SiteSetting;
 use BackedEnum;
-use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -17,7 +16,6 @@ use Filament\Tables\Table;
 
 class SiteSettingResource extends Resource
 {
-    use HasPageShield;
     protected static ?string $model = SiteSetting::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

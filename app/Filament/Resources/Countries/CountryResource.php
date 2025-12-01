@@ -9,7 +9,6 @@ use App\Filament\Resources\Countries\Schemas\CountryForm;
 use App\Filament\Resources\Countries\Tables\CountriesTable;
 use App\Models\Country;
 use BackedEnum;
-use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -17,7 +16,6 @@ use Filament\Tables\Table;
 
 class CountryResource extends Resource
 {
-    use HasPageShield;
     protected static ?string $model = Country::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

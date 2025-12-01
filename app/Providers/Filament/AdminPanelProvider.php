@@ -50,6 +50,9 @@ class AdminPanelProvider extends PanelProvider
                 VerificationStatusChart::class,
                 RecentActivityWidget::class,
             ])
+            ->plugins([
+                FilamentShieldPlugin::make(),
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -60,9 +63,6 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-            ])
-            ->plugins([
-                FilamentShieldPlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,

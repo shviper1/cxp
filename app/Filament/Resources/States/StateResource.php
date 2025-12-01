@@ -9,7 +9,6 @@ use App\Filament\Resources\States\Schemas\StateForm;
 use App\Filament\Resources\States\Tables\StatesTable;
 use App\Models\State;
 use BackedEnum;
-use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -17,7 +16,6 @@ use Filament\Tables\Table;
 
 class StateResource extends Resource
 {
-    use HasPageShield;
     protected static ?string $model = State::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

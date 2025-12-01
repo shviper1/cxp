@@ -9,7 +9,6 @@ use App\Filament\Resources\Sections\Schemas\SectionForm;
 use App\Filament\Resources\Sections\Tables\SectionsTable;
 use App\Models\Section;
 use BackedEnum;
-use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -17,7 +16,6 @@ use Filament\Tables\Table;
 
 class SectionResource extends Resource
 {
-    use HasPageShield;
     protected static ?string $model = Section::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

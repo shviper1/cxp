@@ -9,7 +9,6 @@ use App\Filament\Resources\Posts\Schemas\PostForm;
 use App\Filament\Resources\Posts\Tables\PostsTable;
 use App\Models\Post;
 use BackedEnum;
-use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -17,8 +16,6 @@ use Filament\Tables\Table;
 
 class PostResource extends Resource
 {
-    use HasPageShield;
-
     protected static ?string $model = Post::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

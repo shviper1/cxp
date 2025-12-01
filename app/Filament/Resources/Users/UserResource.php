@@ -21,7 +21,9 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = 'Users';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     public static function form(Schema $schema): Schema
     {
@@ -36,7 +38,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            // Roles relationship is handled by HasRoles trait
         ];
     }
 
