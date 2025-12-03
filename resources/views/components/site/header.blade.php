@@ -1,9 +1,12 @@
 @php
+    $settings = $siteSettings ?? [];
+    $siteName = $settings['site_name'] ?? config('app.name', 'CX Platform');
+    $siteTagline = $settings['site_description'] ?? 'Trusted geo-directory';
     $navigation = [
         ['label' => 'Browse', 'href' => url('/#locations')],
         ['label' => 'Cities', 'href' => url('/#cities')],
         ['label' => 'Insights', 'href' => url('/#insights')],
-        ['label' => 'Contact', 'href' => url('/#contact')],
+        ['label' => 'Contact', 'href' => route('contact')],
     ];
 @endphp
 
@@ -13,10 +16,10 @@
         <div class="flex items-center gap-3">
             <a href="{{ url('/') }}" class="flex items-center gap-3 text-lg font-semibold text-slate-900">
                 <span
-                    class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white font-bold">{{ mb_substr(config('app.name', 'CX'), 0, 2) }}</span>
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white font-bold">{{ mb_substr($siteName, 0, 2) }}</span>
                 <div class="hidden sm:block">
-                    <span>{{ config('app.name', 'CX Platform') }}</span>
-                    <p class="text-xs font-normal text-slate-500">Trusted geo-directory</p>
+                    <span>{{ $siteName }}</span>
+                       <p class="text-xs font-normal text-slate-500">{{ \Illuminate\Support\Str::limit($siteTagline, 60) }}</p>
                 </div>
             </a>
         </div>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class SiteSetting extends Model
 {
@@ -13,13 +14,47 @@ class SiteSetting extends Model
         'group',
     ];
 
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            static::forgetCache();
+        });
+
+        static::deleted(function () {
+            static::forgetCache();
+        });
+    }
+
     /**
      * Get a setting value by key
      */
     public static function get(string $key, $default = null)
     {
-        $setting = static::where('key', $key)->first();
-        return $setting ? $setting->value : $default;
+        $settings = static::allCached();
+
+        return $settings[$key] ?? $default;
+    }
+
+    /**
+     * Retrieve all settings from cache
+     */
+    public static function allCached(): array
+    {
+        return Cache::remember('site_settings_cache', now()->addDay(), function () {
+            try {
+                return static::query()->pluck('value', 'key')->toArray();
+            } catch (\Throwable $exception) {
+                return [];
+            }
+        });
+    }
+
+    /**
+     * Forget the cached settings
+     */
+    public static function forgetCache(): void
+    {
+        Cache::forget('site_settings_cache');
     }
 
     /**
@@ -27,7 +62,7 @@ class SiteSetting extends Model
      */
     public static function set(string $key, $value, string $type = 'text', string $group = 'general')
     {
-        return static::updateOrCreate(
+        $setting = static::updateOrCreate(
             ['key' => $key],
             [
                 'value' => $value,
@@ -35,5 +70,9 @@ class SiteSetting extends Model
                 'group' => $group,
             ]
         );
+
+        static::forgetCache();
+
+        return $setting;
     }
 }

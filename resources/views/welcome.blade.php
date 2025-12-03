@@ -5,7 +5,12 @@
     $pageDescription =
         'Browse curated listings with location-aware filters spanning countries, states, and cities to find the perfect opportunity.';
     $pageKeywords = 'directory, geo listings, countries, states, cities, classifieds';
+    $siteTitle = $siteSettings['site_name'] ?? config('app.name', 'CX Platform');
 @endphp
+
+@section('title', $pageTitle . ' | ' . $siteTitle)
+@section('meta_description', $pageDescription)
+@section('meta_keywords', $pageKeywords)
 
 @section('content')
     @php

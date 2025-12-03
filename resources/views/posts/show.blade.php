@@ -4,7 +4,12 @@
     $pageTitle = $post->title;
     $pageDescription = Str::limit($post->description, 160);
     $pageKeywords = 'listing, ' . strtolower($post->category->name) . ', ' . strtolower($post->city->name);
+    $siteTitle = $siteSettings['site_name'] ?? config('app.name', 'CX Platform');
 @endphp
+
+@section('title', $pageTitle . ' | ' . $siteTitle)
+@section('meta_description', $pageDescription)
+@section('meta_keywords', $pageKeywords)
 
 @section('content')
     <section class="bg-slate-50 py-12">

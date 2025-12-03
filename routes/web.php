@@ -18,6 +18,8 @@ Route::get('/posts', [HomePageController::class, 'browsePosts'])->name('posts.in
 Route::get('/posts/create', [HomePageController::class, 'createPost'])->name('posts.create');
 Route::get('/posts/{post}', [HomePageController::class, 'showPost'])->name('posts.show');
 Route::post('/posts', [HomePageController::class, 'storePost'])->name('posts.store');
+Route::get('/contact', [HomePageController::class, 'contact'])->name('contact');
+Route::post('/contact', [HomePageController::class, 'submitContact'])->name('contact.submit');
 Route::get('/locations/{country}', [HomePageController::class, 'showCountrySections'])->name('locations.country');
 Route::get('/locations/{country}/{section}', [HomePageController::class, 'showSectionCategories'])->name('locations.section');
 Route::get('/locations/{country}/{section}/{category}', [HomePageController::class, 'showCategoryPosts'])->name('locations.category.posts');

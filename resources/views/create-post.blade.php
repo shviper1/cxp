@@ -3,19 +3,24 @@
 @php
     $pageTitle = 'Create New Post';
     $pageDescription = 'Submit your post for review by our team.';
+    $siteTitle = $siteSettings['site_name'] ?? config('app.name', 'CX Platform');
 @endphp
+
+@section('title', $pageTitle . ' | ' . $siteTitle)
+@section('meta_description', $pageDescription)
+@section('meta_keywords', 'create post, submit listing, classifieds')
 
 @section('content')
 <!-- Cache buster: {{ now()->timestamp }} -->
-<div class="min-h-screen bg-gray-50 py-12">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+<div class="min-h-screen py-12 bg-gray-50">
+    <div class="max-w-4xl px-4 mx-auto sm:px-6 lg:px-8">
+        <div class="overflow-hidden bg-white rounded-lg shadow-lg">
             <!-- Header -->
-            <div class="bg-white border-b border-gray-200 px-8 py-6">
+            <div class="px-8 py-6 bg-white border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <h1 class="text-2xl font-bold text-gray-900">Create New Post</h1>
-                        <p class="text-gray-600 mt-1">Fill out the form below to submit your post</p>
+                        <p class="mt-1 text-gray-600">Fill out the form below to submit your post</p>
                     </div>
                     <div class="text-right">
                         <div class="text-lg font-semibold text-gray-900">Step {{ $currentStep ?? 1 }} of 4</div>
@@ -24,13 +29,13 @@
             </div>
 
             @if (session()->has('message'))
-                <div class="mx-8 mt-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+                <div class="px-4 py-3 mx-8 mt-6 text-green-700 border border-green-200 rounded bg-green-50">
                     {{ session('message') }}
                 </div>
             @endif
 
             <!-- Progress Bar -->
-            <div class="px-8 py-6 bg-gray-50 border-b border-gray-200">
+            <div class="px-8 py-6 border-b border-gray-200 bg-gray-50">
                 <div class="flex items-center justify-between mb-4">
                     <span class="text-sm font-medium text-gray-700">Progress</span>
                     <span class="text-sm font-medium text-gray-700">
@@ -47,8 +52,8 @@
                         @endif
                     </span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                <div class="w-full h-2 bg-gray-200 rounded-full">
+                    <div class="h-2 transition-all duration-500 bg-blue-600 rounded-full"
                          style="width:
                          @if(request('title') && request('description') && request('age') && request('email') && request('phone')) 100%
                          @elseif(request('category_id')) 75%
@@ -104,14 +109,14 @@
                     @if($currentStep == 1)
                         <!-- Step 1: Location Selection -->
                         <div class="max-w-2xl mx-auto">
-                            <div class="text-center mb-8">
-                                <h2 class="text-xl font-semibold text-gray-900 mb-2">Select Location</h2>
+                            <div class="mb-8 text-center">
+                                <h2 class="mb-2 text-xl font-semibold text-gray-900">Select Location</h2>
                                 <p class="text-gray-600">Choose where your post should appear</p>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">Country</label>
                                     <select name="country_id" id="country_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500">
                                         <option value="">Select Country</option>
                                         @foreach($countries as $country)
@@ -123,7 +128,7 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">State</label>
                                     <select name="state_id" id="state_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" {{ empty($states) ? 'disabled' : '' }}>
                                         <option value="">Select State</option>
                                         @foreach($states as $state)
@@ -135,7 +140,7 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">City</label>
                                     <select name="city_id" id="city_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" {{ empty($cities) ? 'disabled' : '' }}>
                                         <option value="">Select City</option>
                                         @foreach($cities as $city)
@@ -148,9 +153,9 @@
                             </div>
 
                             @if($selectedCity && $selectedCity->isPaid())
-                                <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-md p-4">
+                                <div class="p-4 mt-6 border border-yellow-200 rounded-md bg-yellow-50">
                                     <div class="flex items-center">
-                                        <div class="text-yellow-800 text-sm">
+                                        <div class="text-sm text-yellow-800">
                                             This location requires payment to post.
                                         </div>
                                     </div>
@@ -161,14 +166,14 @@
                     @elseif($currentStep == 3)
                         <!-- Step 2: Category Selection -->
                         <div class="max-w-2xl mx-auto">
-                            <div class="text-center mb-8">
-                                <h2 class="text-xl font-semibold text-gray-900 mb-2">Select Category</h2>
+                            <div class="mb-8 text-center">
+                                <h2 class="mb-2 text-xl font-semibold text-gray-900">Select Category</h2>
                                 <p class="text-gray-600">Choose the section and category for your post</p>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Section</label>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">Section</label>
                                     <select name="section_id" id="section_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500">
                                         <option value="">Select Section</option>
                                         @foreach($sections as $section)
@@ -180,7 +185,7 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">Category</label>
                                     <select name="category_id" id="category_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" {{ empty($categories) ? 'disabled' : '' }}>
                                         <option value="">Select Category</option>
                                         @foreach($categories as $category)
@@ -196,50 +201,50 @@
                     @elseif($currentStep == 4)
                         <!-- Step 3: Post Details -->
                         <div class="max-w-2xl mx-auto">
-                            <div class="text-center mb-8">
-                                <h2 class="text-xl font-semibold text-gray-900 mb-2">Post Details</h2>
+                            <div class="mb-8 text-center">
+                                <h2 class="mb-2 text-xl font-semibold text-gray-900">Post Details</h2>
                                 <p class="text-gray-600">Fill in the information below</p>
                             </div>
 
                             <div class="space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                        <label class="block mb-2 text-sm font-medium text-gray-700">Title</label>
                                         <input type="text" name="title" value="{{ old('title', request('title')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" placeholder="Enter a descriptive title">
                                         @error('title') <span class="block mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                                        <label class="block mb-2 text-sm font-medium text-gray-700">Age</label>
                                         <input type="number" name="age" value="{{ old('age', request('age')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" placeholder="Your age">
                                         @error('age') <span class="block mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">Description</label>
                                     <textarea name="description" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" placeholder="Provide detailed information about your post">{{ old('description', request('description')) }}</textarea>
                                     @error('description') <span class="block mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                        <label class="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
                                         <input type="email" name="email" value="{{ old('email', request('email')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" placeholder="your.email@example.com">
                                         @error('email') <span class="block mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                                        <label class="block mb-2 text-sm font-medium text-gray-700">Phone</label>
                                         <input type="tel" name="phone" value="{{ old('phone', request('phone')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" placeholder="+1 (555) 123-4567">
                                         @error('phone') <span class="block mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Photos & Videos</label>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">Photos & Videos</label>
                                     <input type="file" name="media[]" multiple class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" accept="image/*,video/*">
-                                    <p class="text-sm text-gray-500 mt-1">You can upload multiple images or videos (max 10MB each)</p>
+                                    <p class="mt-1 text-sm text-gray-500">You can upload multiple images or videos (max 10MB each)</p>
                                     @error('media.*') <span class="block mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
                                 </div>
                             </div>
@@ -248,8 +253,8 @@
                     @elseif($currentStep == 5)
                         <!-- Step 4: Review & Submit -->
                         <div class="max-w-2xl mx-auto">
-                            <div class="text-center mb-8">
-                                <h2 class="text-xl font-semibold text-gray-900 mb-2">Review & Submit</h2>
+                            <div class="mb-8 text-center">
+                                <h2 class="mb-2 text-xl font-semibold text-gray-900">Review & Submit</h2>
                                 <p class="text-gray-600">Please review your information and submit</p>
                             </div>
 
@@ -272,16 +277,16 @@
                                 <input type="hidden" name="{{ $fieldName }}" value="{{ $fieldValue }}">
                             @endforeach
 
-                            <div class="bg-green-50 border border-green-200 rounded-md p-6 mb-6">
+                            <div class="p-6 mb-6 border border-green-200 rounded-md bg-green-50">
                                 <div class="text-center">
-                                    <div class="text-green-800 text-sm">
+                                    <div class="text-sm text-green-800">
                                         Your post is ready for submission. It will be reviewed before publication.
                                     </div>
                                 </div>
                             </div>
 
                             <div class="text-center">
-                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-md transition duration-200">
+                                <button type="submit" class="px-8 py-3 font-medium text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
                                     Submit Post
                                 </button>
                             </div>
@@ -291,11 +296,11 @@
 
                 <!-- Navigation Buttons -->
                 @if($currentStep < 5)
-                    <div class="flex justify-between px-8 py-6 bg-gray-50 border-t">
+                    <div class="flex justify-between px-8 py-6 border-t bg-gray-50">
                         <button type="button" onclick="goToPreviousStep()" class="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium rounded-md transition duration-200 {{ $currentStep == 1 ? 'invisible' : '' }}">
                             Previous
                         </button>
-                        <button type="button" onclick="goToNextStep()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-200">
+                        <button type="button" onclick="goToNextStep()" class="px-6 py-2 font-medium text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
                             Next
                         </button>
                     </div>

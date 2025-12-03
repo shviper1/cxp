@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\City;
+use App\Models\ContactMessage;
 use App\Models\Country;
 use App\Models\Post;
 use App\Models\Section;
+use App\Models\SiteSetting;
 use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -366,5 +368,54 @@ class HomePageController extends Controller
             ->paginate(12);
 
         return view('locations.category-posts', compact('country', 'section', 'category', 'posts'));
+    }
+
+    public function contact()
+    {
+        $pageTitle = 'Contact Us';
+        $pageDescription = SiteSetting::get('site_description', 'We would love to hear from you.');
+
+        $contactEmail = SiteSetting::get('contact_email', config('mail.from.address'));
+        $contactPhone = SiteSetting::get('contact_phone');
+        $contactAddress = SiteSetting::get('contact_address');
+
+        $contactDetails = collect([
+            [
+                'label' => 'Email',
+                'value' => $contactEmail,
+                'href' => $contactEmail ? 'mailto:' . $contactEmail : null,
+            ],
+            [
+                'label' => 'Phone',
+                'value' => $contactPhone,
+                'href' => $contactPhone ? 'tel:' . preg_replace('/[^\d+]/', '', $contactPhone) : null,
+            ],
+            [
+                'label' => 'Address',
+                'value' => $contactAddress,
+                'href' => null,
+            ],
+        ])->filter(fn ($detail) => filled($detail['value']))->values()->all();
+
+        return view('contact', compact('pageTitle', 'pageDescription', 'contactDetails'));
+    }
+
+    public function submitContact(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'subject' => ['nullable', 'string', 'max:255'],
+            'message' => ['required', 'string', 'max:2000'],
+        ]);
+
+        ContactMessage::create(array_merge($data, [
+            'status' => 'new',
+        ]));
+
+        return redirect()
+            ->route('contact')
+            ->with('message', 'Thank you for reaching out! Our team will get back to you shortly.');
     }
 }
