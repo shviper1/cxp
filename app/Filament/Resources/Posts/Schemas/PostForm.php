@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Posts\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -10,6 +12,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class PostForm
 {
@@ -91,10 +94,11 @@ class PostForm
 
                                     TextInput::make('phone')
                                         ->label('Phone Number')
-                                        ->tel()
                                         ->required()
+                                        ->maxLength(30)
                                         ->placeholder('+1 (555) 123-4567')
-                                        ->helperText('Include country code for international numbers'),
+                                        ->helperText('Include country code for international numbers')
+                                        ->rule('string'),
                                 ]),
 
                             Grid::make(2)
@@ -103,18 +107,17 @@ class PostForm
                                         ->label('Age (if applicable)')
                                         ->numeric()
                                         ->minValue(1)
-                                        ->maxValue(120)
-                                        ->placeholder('Enter age')
-                                        ->helperText('Leave empty if not applicable'),
+                                        ->nullable()
+                                        ->helperText('Only share if relevant to your listing'),
 
                                     Select::make('user_id')
-                                        ->label('Posted By')
+                                        ->label('Assign to User')
                                         ->relationship('user', 'name')
-                                        ->required()
                                         ->placeholder('Select user')
-                                        ->preload()
                                         ->searchable()
-                                        ->helperText('Who is posting this?'),
+                                        ->preload()
+                                        ->helperText('Attach this post to an existing user account if needed')
+                                        ->nullable(),
                                 ]),
                         ]),
 
@@ -143,24 +146,47 @@ class PostForm
                                         ->helperText('Specific subcategory'),
                                 ]),
 
-                            Grid::make(1)
+                            Repeater::make('media')
+                                ->label('Photos & Videos')
+                                ->relationship('media')
+                                ->minItems(1)
+                                ->maxItems(10)
+                                ->columns(1)
+                                ->helperText('Upload images or videos (max 10 files, up to 10MB each). Existing files remain unless you remove them.')
                                 ->schema([
-                                    FileUpload::make('media')
-                                        ->label('Photos & Videos')
-                                        ->multiple()
-                                        ->image()
-                                        ->maxFiles(10)
-                                        ->directory('posts/media')
+                                    FileUpload::make('file_path')
+                                        ->label('File')
+                                        ->disk('public')
+                                        ->directory('posts')
                                         ->visibility('public')
-                                        ->imageResizeMode('cover')
-                                        ->imageCropAspectRatio('16:9')
-                                        ->imageResizeTargetWidth('1200')
-                                        ->imageResizeTargetHeight('675')
-                                        ->panelLayout('grid')
-                                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
-                                        ->helperText('Upload high-quality photos (max 10 files, JPG/PNG/GIF/WebP only)')
+                                        ->preserveFileNames()
+                                        ->acceptedFileTypes([
+                                            'image/*',
+                                            'video/*',
+                                        ])
+                                        ->maxSize(10240)
+                                        ->downloadable()
+                                        ->openable()
+                                        ->columnSpanFull()
                                         ->required()
-                                        ->minFiles(1),
+                                        ->reactive()
+                                        ->afterStateUpdated(function ($state, callable $set) {
+                                            $storedPath = is_array($state) ? ($state[0] ?? null) : $state;
+
+                                            if (! filled($storedPath)) {
+                                                return;
+                                            }
+
+                                            $extension = Str::lower(pathinfo($storedPath, PATHINFO_EXTENSION));
+                                            $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                                            $set('type', in_array($extension, $imageExtensions, true) ? 'image' : 'video');
+                                        }),
+
+                                    Hidden::make('type')
+                                        ->default('image')
+                                        ->dehydrated()
+                                        ->reactive(),
                                 ]),
                         ]),
 
