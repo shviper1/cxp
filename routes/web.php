@@ -15,17 +15,15 @@ Route::middleware('guest')->group(function () {
 
 // Public post browsing routes
 Route::get('/posts', [HomePageController::class, 'browsePosts'])->name('posts.index');
+Route::get('/posts/create', [HomePageController::class, 'createPost'])->name('posts.create');
 Route::get('/posts/{post}', [HomePageController::class, 'showPost'])->name('posts.show');
+Route::post('/posts', [HomePageController::class, 'storePost'])->name('posts.store');
 Route::get('/locations/{country}', [HomePageController::class, 'showCountrySections'])->name('locations.country');
 Route::get('/locations/{country}/{section}', [HomePageController::class, 'showSectionCategories'])->name('locations.section');
 Route::get('/locations/{country}/{section}/{category}', [HomePageController::class, 'showCategoryPosts'])->name('locations.category.posts');
 
 // User dashboard routes and authenticated actions
 Route::middleware('auth')->group(function () {
-    // Post creation routes (now require authentication)
-    Route::get('/posts/create', [HomePageController::class, 'createPost'])->name('posts.create');
-    Route::post('/posts', [HomePageController::class, 'storePost'])->name('posts.store');
-
     // Dashboard routes
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::get('/', [HomePageController::class, 'dashboard'])->name('index');

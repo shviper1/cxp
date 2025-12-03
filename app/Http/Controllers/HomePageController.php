@@ -25,8 +25,8 @@ class HomePageController extends Controller
 
     public function createPost(Request $request)
     {
-        $countries = Country::orderBy('order')->orderBy('name')->get();
-        $sections = Section::orderBy('name')->get();
+        $countries = Country::with('states.cities')->orderBy('order')->orderBy('name')->get();
+        $sections = Section::with('categories')->orderBy('name')->get();
 
         // Pre-populate form if city is specified in URL
         $selectedCity = null;

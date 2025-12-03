@@ -3,12 +3,12 @@
 namespace App\Filament\Resources\Posts\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Wizard;
-use Filament\Forms\Components\Wizard\Step;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Wizard;
+use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 
 class PostForm
