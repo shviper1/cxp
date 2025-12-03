@@ -21,7 +21,7 @@ class PostResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Posts';
 
-    protected static ?string $navigationLabel = '📝 Manage Posts';
+    protected static ?string $navigationLabel = 'Manage Posts';
 
     protected static ?int $navigationSort = 6;
 

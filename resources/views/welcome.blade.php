@@ -161,7 +161,7 @@
                                             <li class="flex items-center gap-2">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span>
                                                 <a href="{{ route('locations.country', $country) }}"
-                                                   class="hover:text-slate-900 hover:underline transition-colors">
+                                                    class="hover:text-slate-900 hover:underline transition-colors">
                                                     {{ $city->name }}
                                                 </a>
                                             </li>

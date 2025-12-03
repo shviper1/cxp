@@ -1,7 +1,9 @@
 @php
     $settings = $siteSettings ?? [];
     $siteName = $settings['site_name'] ?? config('app.name', 'CX Platform');
-    $siteDescription = $settings['site_description'] ?? 'A curated geo-directory that helps you explore opportunities across countries, states, and cities with confidence.';
+    $siteDescription =
+        $settings['site_description'] ??
+        'A curated geo-directory that helps you explore opportunities across countries, states, and cities with confidence.';
     $contactEmail = $settings['contact_email'] ?? config('mail.from.address');
     $contactPhone = $settings['contact_phone'] ?? '+1 (000) 000-0000';
     $contactAddress = $settings['contact_address'] ?? null;
@@ -34,13 +36,15 @@
             <div>
                 <p class="font-semibold text-slate-900">Support</p>
                 <ul class="mt-3 space-y-2">
-                    @if($contactEmail)
-                        <li><a href="mailto:{{ $contactEmail }}" class="hover:text-slate-900">{{ $contactEmail }}</a></li>
+                    @if ($contactEmail)
+                        <li><a href="mailto:{{ $contactEmail }}" class="hover:text-slate-900">{{ $contactEmail }}</a>
+                        </li>
                     @endif
-                    @if($contactPhone)
-                        <li><a href="tel:{{ preg_replace('/[^\d+]/', '', $contactPhone) }}" class="hover:text-slate-900">{{ $contactPhone }}</a></li>
+                    @if ($contactPhone)
+                        <li><a href="tel:{{ preg_replace('/[^\d+]/', '', $contactPhone) }}"
+                                class="hover:text-slate-900">{{ $contactPhone }}</a></li>
                     @endif
-                    @if($contactAddress)
+                    @if ($contactAddress)
                         <li><span class="block leading-relaxed">{{ $contactAddress }}</span></li>
                     @endif
                     <li><a href="{{ url('/privacy') }}" class="hover:text-slate-900">Privacy</a></li>
@@ -50,11 +54,11 @@
 
         <div class="flex flex-col justify-between">
             <p class="text-sm text-slate-500">&copy; {{ $year }} {{ $siteName }}. All rights reserved.</p>
-            @if(! empty($socialLinks))
+            @if (!empty($socialLinks))
                 <div class="mt-3 flex flex-wrap gap-3 text-sm text-slate-600">
-                    @foreach($socialLinks as $label => $url)
+                    @foreach ($socialLinks as $label => $url)
                         <a href="{{ $url }}" target="_blank" rel="noopener"
-                           class="hover:text-slate-900 transition">{{ $label }}</a>
+                            class="hover:text-slate-900 transition">{{ $label }}</a>
                     @endforeach
                 </div>
             @endif
