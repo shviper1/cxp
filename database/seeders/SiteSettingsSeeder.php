@@ -11,7 +11,7 @@ class SiteSettingsSeeder extends Seeder
     {
         $settings = [
             // General Settings
-            ['key' => 'site_name', 'value' => 'Advanced Post System', 'type' => 'text', 'group' => 'general'],
+            ['key' => 'site_name', 'value' => 'CityXpersonal', 'type' => 'text', 'group' => 'general'],
             ['key' => 'site_description', 'value' => 'A comprehensive classified ads platform', 'type' => 'textarea', 'group' => 'general'],
             ['key' => 'site_logo', 'value' => null, 'type' => 'image', 'group' => 'general'],
             ['key' => 'site_favicon', 'value' => null, 'type' => 'image', 'group' => 'general'],
@@ -32,6 +32,12 @@ class SiteSettingsSeeder extends Seeder
             ['key' => 'contact_email', 'value' => 'info@example.com', 'type' => 'text', 'group' => 'contact'],
             ['key' => 'contact_phone', 'value' => '+1234567890', 'type' => 'text', 'group' => 'contact'],
             ['key' => 'contact_address', 'value' => '', 'type' => 'textarea', 'group' => 'contact'],
+
+            // Footer Content
+            ['key' => 'about_summary', 'value' => 'A comprehensive classified ads platform', 'type' => 'textarea', 'group' => 'footer'],
+            ['key' => 'about_details', 'value' => 'Map-ready, SEO-friendly listings for every major region.', 'type' => 'textarea', 'group' => 'footer'],
+            ['key' => 'footer_highlight', 'value' => 'Global reach', 'type' => 'text', 'group' => 'footer'],
+            ['key' => 'footer_highlight_description', 'value' => "Map-ready, SEO-friendly listings for every major region.\nJump straight into the data you need. Filter by country, scan top states, and view the cities that matter without leaving the page.", 'type' => 'textarea', 'group' => 'footer'],
         ];
 
         foreach ($settings as $setting) {

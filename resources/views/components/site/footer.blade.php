@@ -18,6 +18,10 @@
         $linkGroups = collect($linkGroups);
     }
 
+    $aboutDetailsLines = collect($aboutDetails ? preg_split('/\r\n|\r|\n/', (string) $aboutDetails) : [])
+        ->map(fn($line) => trim($line))
+        ->filter(fn($line) => $line !== '');
+
     $normalizeLinks = function ($items) {
         return collect($items)
             ->map(function ($item) {
@@ -69,6 +73,15 @@
     $paymentHeading = $settings['footer_payment_heading'] ?? 'Supported payment methods';
     $showPayments = $paymentLinks->isNotEmpty();
 
+    $footerHighlight = $settings['footer_highlight'] ?? 'Global reach';
+    $footerHighlightDescription =
+        $settings['footer_highlight_description'] ?? 'Designed for a global, SEO-friendly classifieds experience.';
+    $footerHighlightLines = collect(
+        $footerHighlightDescription ? preg_split('/\r\n|\r|\n/', (string) $footerHighlightDescription) : [],
+    )
+        ->map(fn($line) => trim($line))
+        ->filter(fn($line) => $line !== '');
+
     $year = now()->year;
 @endphp
 
@@ -89,9 +102,9 @@
                 </div>
             </div>
             <p class="text-sm text-slate-600 leading-relaxed">{{ $aboutSummary }}</p>
-            @if ($aboutDetails)
-                <p class="text-sm text-slate-500 leading-relaxed">{{ $aboutDetails }}</p>
-            @endif
+            @foreach ($aboutDetailsLines as $line)
+                <p class="text-sm text-slate-500 leading-relaxed">{{ $line }}</p>
+            @endforeach
         </div>
 
         <div>
@@ -166,7 +179,16 @@
         <div
             class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-4 text-xs text-slate-500 sm:flex-row sm:px-6 lg:px-8">
             <p>&copy; {{ $year }} {{ $siteName }}. All rights reserved.</p>
-            <p>Designed for a global, SEO-friendly classifieds experience.</p>
+            @if ($footerHighlight || $footerHighlightLines->isNotEmpty())
+                <div class="text-center sm:text-right">
+                    @if ($footerHighlight)
+                        <p class="text-xs font-semibold text-slate-600">{{ $footerHighlight }}</p>
+                    @endif
+                    @foreach ($footerHighlightLines as $line)
+                        <p class="text-xs text-slate-500 leading-relaxed">{{ $line }}</p>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 </footer>
