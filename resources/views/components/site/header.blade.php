@@ -2,6 +2,8 @@
     $settings = $siteSettings ?? [];
     $siteName = $settings['site_name'] ?? config('app.name', 'CX Platform');
     $siteTagline = $settings['site_description'] ?? 'Trusted geo-directory';
+    $siteLogo = $settings['site_logo'] ?? null;
+    $siteLogoUrl = $siteLogo ? asset('storage/' . ltrim($siteLogo, '/')) : null;
     $navigation = [
         ['label' => 'Browse', 'href' => url('/#locations')],
         ['label' => 'Cities', 'href' => url('/#cities')],
@@ -15,8 +17,13 @@
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <div class="flex items-center gap-3">
             <a href="{{ url('/') }}" class="flex items-center gap-3 text-lg font-semibold text-slate-900">
-                <span
-                    class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white font-bold">{{ mb_substr($siteName, 0, 2) }}</span>
+                @if ($siteLogoUrl)
+                    <img src="{{ $siteLogoUrl }}" alt="{{ $siteName }} logo"
+                        class="h-10 w-10 rounded-full object-cover object-center">
+                @else
+                    <span
+                        class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white font-bold">{{ mb_substr($siteName, 0, 2) }}</span>
+                @endif
                 <div class="hidden sm:block">
                     <span>{{ $siteName }}</span>
                     <p class="text-xs font-normal text-slate-500">{{ \Illuminate\Support\Str::limit($siteTagline, 60) }}

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\FooterLink;
 use App\Models\SiteSetting;
 use App\Models\User;
 use App\Observers\UserObserver;
@@ -32,6 +33,16 @@ class AppServiceProvider extends ServiceProvider
             } catch (Throwable $exception) {
                 $view->with('siteSettings', []);
             }
+        });
+
+        View::composer('components.site.footer', function ($view) {
+            try {
+                $links = FooterLink::allCached()->groupBy('type');
+            } catch (Throwable $exception) {
+                $links = collect();
+            }
+
+            $view->with('footerLinks', $links);
         });
     }
 }
