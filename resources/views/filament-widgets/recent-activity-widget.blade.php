@@ -1,35 +1,39 @@
 <x-filament-widgets::widget>
-    
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
- 
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
         <!-- <x-slot name="heading">Recent Users</x-slot> -->
 
 
 
-<div style="display:grid; grid-template-columns:1fr; gap:24px; margin-top:10px;">
+        <div style="display:grid; grid-template-columns:1fr; gap:24px; margin-top:10px;">
 
-    <!-- Recent Users -->
-    <div style="
+            <!-- Recent Users -->
+            <div style="
         padding:20px;
         border:1px solid var(--card-border);
         border-radius:12px;
         background:var(--card-bg);
-    " class="fi-wi-stats-overview-stat">
-        <h3 style="font-size:18px; font-weight:600; margin-bottom:16px; color:var(--text-title);">Recent Users</h3>
+    "
+                class="fi-wi-stats-overview-stat">
+                <h3 style="font-size:18px; font-weight:600; margin-bottom:16px; color:var(--text-title);">Recent Users
+                </h3>
 
-        @foreach($this->getRecentUsers() as $user)
-            <div style="
+                @foreach ($this->getRecentUsers() as $user)
+                    <div
+                        style="
                 padding:14px;
                 border:1px solid var(--inner-border);
                 border-radius:12px;
                 margin-bottom:12px;
                 background:var(--inner-bg);
             ">
-                <!-- Row -->
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                        <!-- Row -->
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
 
-                    <!-- Avatar -->
-                    <div style="
+                            <!-- Avatar -->
+                            <div
+                                style="
                         width:36px;
                         height:36px;
                         background:#3b82f6;
@@ -41,11 +45,12 @@
                         justify-content:center;
                         font-weight:600;
                     ">
-                        {{ strtoupper(substr($user->name,0,1)) }}
-                    </div>
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </div>
 
-                    <div style="flex:1; min-width:0;">
-                        <p style="
+                            <div style="flex:1; min-width:0;">
+                                <p
+                                    style="
                             font-size:14px;
                             font-weight:600;
                             color:var(--text-title);
@@ -54,10 +59,11 @@
                             overflow:hidden;
                             text-overflow:ellipsis;
                         ">
-                            {{ $user->name }}
-                        </p>
+                                    {{ $user->name }}
+                                </p>
 
-                        <p style="
+                                <p
+                                    style="
                             font-size:12px;
                             color:var(--text-sub);
                             margin:0;
@@ -65,22 +71,31 @@
                             overflow:hidden;
                             text-overflow:ellipsis;
                         ">
-                            {{ $user->email }}
-                        </p>
-                    </div>
-                </div>
+                                    {{ $user->email }}
+                                </p>
+                            </div>
+                        </div>
 
-                <!-- Status -->
-                <div style="display:flex; align-items:center; justify-content:space-between;">
+                        <!-- Status -->
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
 
-                    @php
-                        $colorBg = $user->verification_status === 'verified' ? 'var(--badge-green-bg)' :
-                                  ($user->verification_status === 'pending' ? 'var(--badge-yellow-bg)' : 'var(--badge-gray-bg)');
-                        $colorText = $user->verification_status === 'verified' ? 'var(--badge-green-text)' :
-                                   ($user->verification_status === 'pending' ? 'var(--badge-yellow-text)' : 'var(--badge-gray-text)');
-                    @endphp
+                            @php
+                                $colorBg =
+                                    $user->verification_status === 'verified'
+                                        ? 'var(--badge-green-bg)'
+                                        : ($user->verification_status === 'pending'
+                                            ? 'var(--badge-yellow-bg)'
+                                            : 'var(--badge-gray-bg)');
+                                $colorText =
+                                    $user->verification_status === 'verified'
+                                        ? 'var(--badge-green-text)'
+                                        : ($user->verification_status === 'pending'
+                                            ? 'var(--badge-yellow-text)'
+                                            : 'var(--badge-gray-text)');
+                            @endphp
 
-                    <span style="
+                            <span
+                                style="
                         padding:4px 8px;
                         border-radius:6px;
                         font-size:12px;
@@ -88,48 +103,62 @@
                         background:{{ $colorBg }};
                         color:{{ $colorText }};
                     ">
-                        {{ ucfirst($user->verification_status ?? 'unverified') }}
-                    </span>
+                                {{ ucfirst($user->verification_status ?? 'unverified') }}
+                            </span>
 
-                    <span style="font-size:12px; color:var(--text-sub);">
-                        {{ $user->created_at->diffForHumans() }}
-                    </span>
-                </div>
+                            <span style="font-size:12px; color:var(--text-sub);">
+                                {{ $user->created_at->diffForHumans() }}
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-        @endforeach
-    </div>
 
-    <!-- Recent Posts -->
-    <div style="
+            <!-- Recent Posts -->
+            <div style="
         padding:20px;
         border:1px solid var(--card-border);
         border-radius:12px;
         background:var(--card-bg);
-    " class="fi-wi-stats-overview-stat">
-        <h3 style="font-size:18px; font-weight:600; margin-bottom:16px; color:var(--text-title);">Recent Posts</h3>
+    "
+                class="fi-wi-stats-overview-stat">
+                <h3 style="font-size:18px; font-weight:600; margin-bottom:16px; color:var(--text-title);">Recent Posts
+                </h3>
 
-        @foreach($this->getRecentPosts() as $post)
-            @php
-                $pBg = $post->status === 'approved' ? 'var(--badge-green-bg)' :
-                       ($post->status === 'pending' ? 'var(--badge-yellow-bg)' :
-                       ($post->status === 'rejected' ? '#fecaca' : 'var(--badge-gray-bg)'));
+                @foreach ($this->getRecentPosts() as $post)
+                    @php
+                        $pBg =
+                            $post->status === 'approved'
+                                ? 'var(--badge-green-bg)'
+                                : ($post->status === 'pending'
+                                    ? 'var(--badge-yellow-bg)'
+                                    : ($post->status === 'rejected'
+                                        ? '#fecaca'
+                                        : 'var(--badge-gray-bg)'));
 
-                $pText = $post->status === 'approved' ? 'var(--badge-green-text)' :
-                         ($post->status === 'pending' ? 'var(--badge-yellow-text)' :
-                         ($post->status === 'rejected' ? '#991b1b' : 'var(--badge-gray-text)'));
-            @endphp
+                        $pText =
+                            $post->status === 'approved'
+                                ? 'var(--badge-green-text)'
+                                : ($post->status === 'pending'
+                                    ? 'var(--badge-yellow-text)'
+                                    : ($post->status === 'rejected'
+                                        ? '#991b1b'
+                                        : 'var(--badge-gray-text)'));
+                    @endphp
 
-            <div style="
+                    <div
+                        style="
                 padding:14px;
                 border:1px solid var(--inner-border);
                 border-radius:12px;
                 margin-bottom:12px;
                 background:var(--inner-bg);
             ">
-                <div style="display:flex; justify-content:space-between; gap:12px; margin-bottom:8px;">
+                        <div style="display:flex; justify-content:space-between; gap:12px; margin-bottom:8px;">
 
-                    <div style="flex:1; min-width:0;">
-                        <p style="
+                            <div style="flex:1; min-width:0;">
+                                <p
+                                    style="
                             font-size:14px;
                             font-weight:600;
                             margin:0 0 4px 0;
@@ -139,15 +168,16 @@
                             -webkit-box-orient:vertical;
                             overflow:hidden;
                         ">
-                            {{ $post->title }}
-                        </p>
+                                    {{ $post->title }}
+                                </p>
 
-                        <p style="font-size:12px; color:var(--text-sub); margin:0;">
-                            by {{ $post->user->name ?? 'Unknown' }}
-                        </p>
-                    </div>
+                                <p style="font-size:12px; color:var(--text-sub); margin:0;">
+                                    by {{ $post->user->name ?? 'Unknown' }}
+                                </p>
+                            </div>
 
-                    <span style="
+                            <span
+                                style="
                         padding:4px 8px;
                         border-radius:6px;
                         font-size:12px;
@@ -156,26 +186,27 @@
                         background:{{ $pBg }};
                         color:{{ $pText }};
                     ">
-                        {{ ucfirst($post->status) }}
-                    </span>
-                </div>
+                                {{ ucfirst($post->status) }}
+                            </span>
+                        </div>
 
-                <div style="
+                        <div
+                            style="
                     border-top:1px solid var(--inner-border);
                     padding-top:8px;
                 ">
-                    <span style="font-size:12px; color:var(--text-sub);">
-                        {{ $post->created_at->diffForHumans() }}
-                    </span>
-                </div>
+                            <span style="font-size:12px; color:var(--text-sub);">
+                                {{ $post->created_at->diffForHumans() }}
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-        @endforeach
+        </div>
+
+
+
     </div>
-</div>
-
-     
-
-</div>
 
 
 </x-filament-widgets::widget>

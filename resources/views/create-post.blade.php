@@ -58,76 +58,114 @@
         $displayStep = min($currentStep, 4);
     @endphp
     <!-- Cache buster: {{ now()->timestamp }} -->
-    <div class="min-h-screen py-12 bg-gray-50">
-        <div class="max-w-4xl px-4 mx-auto sm:px-6 lg:px-8">
-            <div class="overflow-hidden bg-white rounded-lg shadow-lg">
+    <div
+        class="min-h-screen bg-gradient-to-br from-sky-50 via-white to-indigo-100 py-10 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
+        <div class="max-w-5xl px-4 mx-auto sm:px-6 lg:px-8">
+            <div
+                class="relative overflow-hidden rounded-3xl border border-white/80 bg-white/95 shadow-xl backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/85">
+                <div
+                    class="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-r from-blue-400/15 via-transparent to-emerald-400/20 dark:from-blue-500/10 dark:via-transparent dark:to-emerald-500/10">
+                </div>
+
                 <!-- Header -->
-                <div class="px-8 py-6 bg-white border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-2xl font-bold text-gray-900">Create New Post</h1>
-                            <p class="mt-1 text-gray-600">Fill out the form below to submit your post</p>
+                <div class="relative px-6 py-8 sm:px-10">
+                    <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+                        <div class="max-w-xl space-y-2">
+                            <div
+                                class="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-600 shadow-sm dark:bg-blue-500/15 dark:text-blue-300">
+                                Ready to publish
+                            </div>
+                            <div>
+                                <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl dark:text-white">Create New
+                                    Post</h1>
+                                <p class="mt-1 text-sm text-slate-500 sm:text-base dark:text-slate-400">Share your story with
+                                    a few guided steps. We keep everything lightweight and mobile friendly.</p>
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <div class="text-lg font-semibold text-gray-900">Step <span
-                                    data-step-display>{{ $displayStep }}</span> of 4</div>
+
+                        <div
+                            class="flex items-center gap-3 self-start rounded-2xl bg-white/80 px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-white/50 dark:bg-slate-900/60 dark:text-slate-200 dark:ring-slate-800">
+                            <span>Step</span>
+                            <span
+                                class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-500 text-white shadow-sm">
+                                <span data-step-display>{{ $displayStep }}</span>
+                            </span>
+                            <span>of 4</span>
                         </div>
                     </div>
                 </div>
 
                 @if (session()->has('message'))
-                    <div class="px-4 py-3 mx-8 mt-6 text-green-700 border border-green-200 rounded bg-green-50">
+                    <div
+                        class="mx-6 mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/90 px-5 py-4 text-sm font-medium text-emerald-700 shadow-sm sm:mx-10 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-200">
                         {{ session('message') }}
                     </div>
                 @endif
 
                 <!-- Progress Bar -->
-                <div class="px-8 py-6 border-b border-gray-200 bg-gray-50">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-sm font-medium text-gray-700">Progress</span>
-                        <span class="text-sm font-medium text-gray-700" data-progress-text>{{ $progressPercent }}%</span>
-                    </div>
-                    <div class="w-full h-2 bg-gray-200 rounded-full">
-                        <div class="h-2 transition-all duration-500 bg-blue-600 rounded-full" id="progressBar"
-                            style="width: {{ $progressPercent }}%">
+                <div
+                    class="relative border-t border-b border-white/80 bg-white/70 px-6 py-6 sm:px-10 dark:border-slate-800/60 dark:bg-slate-900/60">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div class="space-y-1">
+                            <span
+                                class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Progress</span>
+                            <p class="text-sm text-slate-600 dark:text-slate-300">Complete the essentials to move forward —
+                                you can always go back.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-medium text-slate-600 dark:text-slate-300"
+                                data-progress-text>{{ $progressPercent }}%</span>
+                            <div class="h-2 w-36 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                                <div id="progressBar"
+                                    class="h-full rounded-full bg-gradient-to-r from-blue-500 via-sky-500 to-emerald-500 transition-all duration-500"
+                                    style="width: {{ $progressPercent }}%"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex flex-col gap-6 mt-6">
-                        <div class="flex flex-wrap gap-8">
+
+                    <div class="mt-6 -mx-2 overflow-x-auto pb-1">
+                        <div
+                            class="flex min-w-[560px] items-start justify-between gap-4 px-2 md:min-w-full md:flex-wrap md:justify-start">
                             @foreach ($stepLabels as $index => $step)
                                 @php
                                     $isCompleted = $currentStep > $index;
                                     $isCurrent = $currentStep === $index;
                                     $circleClasses = $isCompleted
-                                        ? 'bg-green-600 text-white'
+                                        ? 'bg-emerald-500 text-white shadow-sm'
                                         : ($isCurrent
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-gray-200 text-gray-600');
-                                    $labelClasses = $isCompleted || $isCurrent ? 'text-blue-600' : 'text-gray-500';
+                                            ? 'bg-blue-500 text-white shadow-sm'
+                                            : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300');
+                                    $labelClasses =
+                                        $isCompleted || $isCurrent
+                                            ? 'text-blue-600 dark:text-blue-300'
+                                            : 'text-slate-500 dark:text-slate-400';
                                 @endphp
-                                <div class="flex flex-col items-center text-center"
+                                <div class="flex min-w-[130px] flex-col items-center justify-center rounded-2xl border border-transparent px-3 py-2 text-center transition md:items-start md:text-left"
                                     data-step-indicator="{{ $index }}">
-                                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all {{ $circleClasses }}"
+                                    <div class="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-all {{ $circleClasses }}"
                                         data-step-circle="{{ $index }}">
                                         {{ $index }}
                                     </div>
-                                    <span class="mt-2 text-xs font-semibold uppercase tracking-wide {{ $labelClasses }}"
+                                    <span class="mt-2 text-[11px] font-semibold uppercase tracking-wide {{ $labelClasses }}"
                                         data-step-label="{{ $index }}">
                                         {{ $step['title'] }}
                                     </span>
-                                    <p class="mt-1 text-[11px] text-slate-500 max-w-[140px]">{{ $step['subtitle'] }}</p>
+                                    <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400 md:max-w-[220px]">
+                                        {{ $step['subtitle'] }}</p>
                                 </div>
                             @endforeach
-                            <div class="flex flex-col items-center text-center" data-step-indicator="5">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all {{ $currentStep === 5 ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-600' }}"
+                            <div class="flex min-w-[130px] flex-col items-center justify-center rounded-2xl border border-transparent px-3 py-2 text-center transition md:items-start md:text-left"
+                                data-step-indicator="5">
+                                <div class="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-all {{ $currentStep === 5 ? 'bg-emerald-500 text-white shadow-sm' : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' }}"
                                     data-step-circle="5">
                                     ✓
                                 </div>
                                 <span
-                                    class="mt-2 text-xs font-semibold uppercase tracking-wide {{ $currentStep === 5 ? 'text-green-600' : 'text-gray-500' }}">
+                                    class="mt-2 text-[11px] font-semibold uppercase tracking-wide {{ $currentStep === 5 ? 'text-emerald-600 dark:text-emerald-300' : 'text-slate-500 dark:text-slate-400' }}">
                                     Review
                                 </span>
-                                <p class="mt-1 text-[11px] text-slate-500 max-w-[140px]">Preview &amp; submit</p>
+                                <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400 md:max-w-[220px]">Preview
+                                    &amp; submit</p>
                             </div>
                         </div>
                     </div>
@@ -137,47 +175,49 @@
                     @csrf
 
                     <!-- Step Content -->
-                    <div class="px-8 py-8 space-y-10">
+                    <div class="space-y-10 px-6 py-8 sm:px-10">
                         <!-- Step 1: Basic Information -->
-                        <div class="max-w-2xl mx-auto step-content {{ $currentStep === 1 ? '' : 'hidden' }}"
+                        <div class="step-content mx-auto max-w-3xl rounded-2xl border border-white/80 bg-white/95 p-6 shadow-sm ring-1 ring-white/70 transition dark:border-slate-800/60 dark:bg-slate-900/75 {{ $currentStep === 1 ? '' : 'hidden' }}"
                             data-step="1">
-                            <div class="mb-8 text-center">
-                                <h2 class="mb-2 text-xl font-semibold text-gray-900">Basic Information</h2>
-                                <p class="text-gray-600">Tell us about your post</p>
+                            <div class="mb-6 space-y-2 text-center sm:text-left">
+                                <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Basic Information</h2>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">Share the essentials so readers
+                                    instantly understand what your post is about.</p>
                             </div>
 
-                            <div class="space-y-6">
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Post Title <span
-                                            class="text-red-500">*</span></label>
+                            <div class="grid gap-6">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Post Title
+                                        <span class="text-rose-500">*</span></label>
                                     <input type="text" name="title" value="{{ $basicTitle }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500"
-                                        placeholder="Enter a descriptive title">
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20"
+                                        placeholder="Give your post a memorable name">
                                     @error('title')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
 
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Description <span
-                                            class="text-red-500">*</span></label>
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Description
+                                        <span class="text-rose-500">*</span></label>
                                     <textarea name="description" rows="5"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500"
-                                        placeholder="Provide detailed information about your post">{{ $basicDescription }}</textarea>
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20"
+                                        placeholder="Describe what makes this post helpful or exciting">{{ $basicDescription }}</textarea>
                                     @error('description')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
 
-                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                    <div>
-                                        <label class="block mb-2 text-sm font-medium text-gray-700">Age <span
-                                                class="text-red-500">*</span></label>
+                                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Age
+                                            <span class="text-rose-500">*</span></label>
                                         <input type="number" name="age" value="{{ $basicAge }}" min="1"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500"
+                                            class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20"
                                             placeholder="Your age">
                                         @error('age')
-                                            <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                            <span class="block text-sm text-rose-500">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
@@ -185,19 +225,20 @@
                         </div>
 
                         <!-- Step 2: Location Details -->
-                        <div class="max-w-2xl mx-auto step-content {{ $currentStep === 2 ? '' : 'hidden' }}"
+                        <div class="step-content mx-auto max-w-3xl rounded-2xl border border-white/80 bg-white/95 p-6 shadow-sm ring-1 ring-white/70 transition dark:border-slate-800/60 dark:bg-slate-900/75 {{ $currentStep === 2 ? '' : 'hidden' }}"
                             data-step="2">
-                            <div class="mb-8 text-center">
-                                <h2 class="mb-2 text-xl font-semibold text-gray-900">Location Details</h2>
-                                <p class="text-gray-600">Where is this located?</p>
+                            <div class="mb-6 space-y-2 text-center sm:text-left">
+                                <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Location Details</h2>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">Pin the right spot so people know
+                                    exactly where this post belongs.</p>
                             </div>
 
-                            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Country <span
-                                            class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Country
+                                        <span class="text-rose-500">*</span></label>
                                     <select name="country_id" id="country_id"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500">
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20">
                                         <option value="">Select Country</option>
                                         @foreach ($countries as $country)
                                             <option value="{{ $country->id }}"
@@ -207,15 +248,15 @@
                                         @endforeach
                                     </select>
                                     @error('country_id')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
 
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">State <span
-                                            class="text-red-500">*</span></label>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">State
+                                        <span class="text-rose-500">*</span></label>
                                     <select name="state_id" id="state_id"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500"
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20"
                                         {{ empty($states) ? 'disabled' : '' }}>
                                         <option value="">Select State</option>
                                         @foreach ($states as $state)
@@ -226,15 +267,15 @@
                                         @endforeach
                                     </select>
                                     @error('state_id')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
 
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">City <span
-                                            class="text-red-500">*</span></label>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">City
+                                        <span class="text-rose-500">*</span></label>
                                     <select name="city_id" id="city_id"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500"
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20"
                                         {{ empty($cities) ? 'disabled' : '' }}>
                                         <option value="">Select City</option>
                                         @foreach ($cities as $city)
@@ -245,72 +286,74 @@
                                         @endforeach
                                     </select>
                                     @error('city_id')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
 
                             @if ($selectedCity && $selectedCity->isPaid())
-                                <div class="p-4 mt-6 border border-yellow-200 rounded-md bg-yellow-50">
-                                    <div class="flex items-center">
-                                        <div class="text-sm text-yellow-800">
-                                            This location requires payment to post.
-                                        </div>
-                                    </div>
+                                <div
+                                    class="mt-6 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-sm text-amber-700 shadow-sm dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200">
+                                    This location requires payment to post.
                                 </div>
                             @endif
                         </div>
 
                         <!-- Step 3: Contact Information -->
-                        <div class="max-w-2xl mx-auto step-content {{ $currentStep === 3 ? '' : 'hidden' }}"
+                        <div class="step-content mx-auto max-w-3xl rounded-2xl border border-white/80 bg-white/95 p-6 shadow-sm ring-1 ring-white/70 transition dark:border-slate-800/60 dark:bg-slate-900/75 {{ $currentStep === 3 ? '' : 'hidden' }}"
                             data-step="3">
-                            <div class="mb-8 text-center">
-                                <h2 class="mb-2 text-xl font-semibold text-gray-900">Contact Information</h2>
-                                <p class="text-gray-600">How can people reach you?</p>
+                            <div class="mb-6 space-y-2 text-center sm:text-left">
+                                <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Contact Information</h2>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">Let us know how the team can reach
+                                    you for quick approvals.</p>
                             </div>
 
-                            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Email Address <span
-                                            class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Email
+                                        Address <span class="text-rose-500">*</span></label>
                                     <input type="email" name="email" value="{{ $contactEmail }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500"
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20"
                                         placeholder="your.email@example.com">
                                     @error('email')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
 
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Phone Number <span
-                                            class="text-red-500">*</span></label>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Phone
+                                        Number <span class="text-rose-500">*</span></label>
                                     <input type="text" name="phone" value="{{ $contactPhone }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500"
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20"
                                         placeholder="+1 (555) 123-4567">
                                     @error('phone')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
 
-                            <p class="mt-6 text-sm text-gray-500">Your contact details are only shared with
-                                administrators for review purposes.</p>
+                            <div
+                                class="mt-6 flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50/80 p-4 text-sm text-blue-700 shadow-sm dark:border-blue-400/30 dark:bg-blue-400/10 dark:text-blue-200">
+                                <x-heroicon-o-lock-closed class="h-4 w-4" />
+                                <p>Your contact details stay private and are only visible to moderators during review.</p>
+                            </div>
                         </div>
 
                         <!-- Step 4: Category & Media -->
-                        <div class="max-w-2xl mx-auto space-y-8 step-content {{ $currentStep === 4 ? '' : 'hidden' }}"
+                        <div class="step-content mx-auto max-w-3xl space-y-8 rounded-2xl border border-white/80 bg-white/95 p-6 shadow-sm ring-1 ring-white/70 transition dark:border-slate-800/60 dark:bg-slate-900/75 {{ $currentStep === 4 ? '' : 'hidden' }}"
                             data-step="4">
-                            <div class="text-center">
-                                <h2 class="mb-2 text-xl font-semibold text-gray-900">Category &amp; Media</h2>
-                                <p class="text-gray-600">Categorize your post and add supporting visuals</p>
+                            <div class="space-y-2 text-center sm:text-left">
+                                <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Category &amp; Media</h2>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">Find the best fit and add visuals
+                                    that boost trust.</p>
                             </div>
 
-                            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Section <span
-                                            class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Section
+                                        <span class="text-rose-500">*</span></label>
                                     <select name="section_id" id="section_id"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500">
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20">
                                         <option value="">Select Section</option>
                                         @foreach ($sections as $section)
                                             <option value="{{ $section->id }}"
@@ -320,15 +363,15 @@
                                         @endforeach
                                     </select>
                                     @error('section_id')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
 
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Category <span
-                                            class="text-red-500">*</span></label>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Category
+                                        <span class="text-rose-500">*</span></label>
                                     <select name="category_id" id="category_id"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500"
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20"
                                         {{ empty($categories) ? 'disabled' : '' }}>
                                         <option value="">Select Category</option>
                                         @foreach ($categories as $category)
@@ -339,55 +382,62 @@
                                         @endforeach
                                     </select>
                                     @error('category_id')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
 
-                            <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-700">Photos &amp; Videos <span
-                                        class="text-red-500">*</span></label>
-                                <input type="file" name="media[]" multiple
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500"
-                                    accept="image/*,video/*">
-                                <p class="mt-1 text-sm text-gray-500">Upload up to 10 files (images or videos, 10MB max
-                                    each). Existing uploads stay attached unless you replace them.</p>
-                                @error('media.*')
-                                    <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
-                                @enderror
+                            <div class="space-y-3">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Photos
+                                        &amp; Videos <span class="text-rose-500">*</span></label>
+                                    <input type="file" name="media[]" multiple
+                                        class="w-full rounded-xl border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-500 shadow-sm outline-none transition hover:border-blue-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-blue-400 dark:focus:border-blue-500 dark:focus:ring-blue-400/20"
+                                        accept="image/*,video/*">
+                                    @error('media.*')
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div
+                                    class="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-xs text-slate-500 shadow-sm dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300">
+                                    Upload up to 10 files (images or videos, 10MB max each). Existing uploads stay attached
+                                    unless you replace them.
+                                </div>
                             </div>
                         </div>
 
                         <!-- Step 5: Review & Submit -->
-                        <div class="max-w-3xl mx-auto step-content {{ $currentStep === 5 ? '' : 'hidden' }}"
+                        <div class="step-content mx-auto max-w-4xl space-y-8 rounded-2xl border border-white/80 bg-white/95 p-6 shadow-sm ring-1 ring-white/70 transition dark:border-slate-800/60 dark:bg-slate-900/75 {{ $currentStep === 5 ? '' : 'hidden' }}"
                             data-step="5">
-                            <div class="mb-8 text-center">
-                                <h2 class="mb-2 text-xl font-semibold text-gray-900">Review &amp; Submit</h2>
-                                <p class="text-gray-600">Double-check your information before publishing.</p>
+                            <div class="space-y-2 text-center sm:text-left">
+                                <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Review &amp; Submit</h2>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">Give everything a final glance before
+                                    you send it to the team.</p>
                             </div>
 
-                            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Post Status <span
-                                            class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Post
+                                        Status <span class="text-rose-500">*</span></label>
                                     <select name="status"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500">
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20">
                                         <option value="pending"
                                             {{ old('status', 'pending') === 'pending' ? 'selected' : '' }}>Pending Review
                                         </option>
                                         <option value="approved" {{ old('status') === 'approved' ? 'selected' : '' }}>
-                                            Publish Immediately</option>
+                                            Publish Immediately
+                                        </option>
                                     </select>
                                     @error('status')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
 
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-gray-700">Payment Status <span
-                                            class="text-red-500">*</span></label>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-600 dark:text-slate-300">Payment
+                                        Status <span class="text-rose-500">*</span></label>
                                     <select name="payment_status"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500">
+                                        class="w-full rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-blue-500 dark:focus:ring-blue-400/20">
                                         <option value="free"
                                             {{ old('payment_status', 'free') === 'free' ? 'selected' : '' }}>Free Post
                                         </option>
@@ -395,107 +445,120 @@
                                             {{ old('payment_status') === 'pending' ? 'selected' : '' }}>Payment Pending
                                         </option>
                                         <option value="paid" {{ old('payment_status') === 'paid' ? 'selected' : '' }}>
-                                            Paid Post</option>
+                                            Paid Post
+                                        </option>
                                     </select>
                                     @error('payment_status')
-                                        <span class="block mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        <span class="block text-sm text-rose-500">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
 
-                            <div class="mt-8 space-y-6">
+                            <div class="space-y-6">
                                 <div
-                                    class="rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800/60">
-                                    <h3 class="mb-4 flex items-center text-sm font-semibold text-gray-900 dark:text-white">
-                                        <x-heroicon-o-eye class="mr-2 h-5 w-5 text-blue-600" />
+                                    class="rounded-2xl border border-slate-200 bg-slate-50/80 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800/60">
+                                    <h3
+                                        class="mb-4 flex items-center text-sm font-semibold text-slate-900 dark:text-white">
+                                        <x-heroicon-o-eye class="mr-2 h-5 w-5 text-blue-500" />
                                         Summary
                                     </h3>
 
                                     <div class="grid gap-4 sm:grid-cols-2">
                                         <div>
                                             <span
-                                                class="text-xs font-medium uppercase tracking-wide text-gray-500">Title</span>
-                                            <p class="text-sm font-semibold text-gray-900" data-summary="title">—</p>
+                                                class="text-xs font-medium uppercase tracking-wide text-slate-500">Title</span>
+                                            <p class="text-sm font-semibold text-slate-900 dark:text-slate-100"
+                                                data-summary="title">—</p>
                                         </div>
                                         <div>
                                             <span
-                                                class="text-xs font-medium uppercase tracking-wide text-gray-500">Age</span>
-                                            <p class="text-sm text-gray-900" data-summary="age">—</p>
+                                                class="text-xs font-medium uppercase tracking-wide text-slate-500">Age</span>
+                                            <p class="text-sm text-slate-900 dark:text-slate-100" data-summary="age">—</p>
                                         </div>
                                         <div class="sm:col-span-2">
                                             <span
-                                                class="text-xs font-medium uppercase tracking-wide text-gray-500">Description</span>
-                                            <p class="text-sm text-gray-700" data-summary="description">—</p>
+                                                class="text-xs font-medium uppercase tracking-wide text-slate-500">Description</span>
+                                            <p class="text-sm text-slate-700 dark:text-slate-300"
+                                                data-summary="description">—</p>
                                         </div>
                                         <div>
                                             <span
-                                                class="text-xs font-medium uppercase tracking-wide text-gray-500">Location</span>
-                                            <p class="text-sm text-gray-900" data-summary="location">—</p>
+                                                class="text-xs font-medium uppercase tracking-wide text-slate-500">Location</span>
+                                            <p class="text-sm text-slate-900 dark:text-slate-100" data-summary="location">
+                                                —</p>
                                         </div>
                                         <div>
                                             <span
-                                                class="text-xs font-medium uppercase tracking-wide text-gray-500">Category</span>
-                                            <p class="text-sm text-gray-900" data-summary="category">—</p>
+                                                class="text-xs font-medium uppercase tracking-wide text-slate-500">Category</span>
+                                            <p class="text-sm text-slate-900 dark:text-slate-100" data-summary="category">
+                                                —</p>
                                         </div>
                                         <div>
                                             <span
-                                                class="text-xs font-medium uppercase tracking-wide text-gray-500">Email</span>
-                                            <p class="text-sm text-gray-900" data-summary="email">—</p>
+                                                class="text-xs font-medium uppercase tracking-wide text-slate-500">Email</span>
+                                            <p class="text-sm text-slate-900 dark:text-slate-100" data-summary="email">—
+                                            </p>
                                         </div>
                                         <div>
                                             <span
-                                                class="text-xs font-medium uppercase tracking-wide text-gray-500">Phone</span>
-                                            <p class="text-sm text-gray-900" data-summary="phone">—</p>
+                                                class="text-xs font-medium uppercase tracking-wide text-slate-500">Phone</span>
+                                            <p class="text-sm text-slate-900 dark:text-slate-100" data-summary="phone">—
+                                            </p>
                                         </div>
                                         <div>
-                                            <span class="text-xs font-medium uppercase tracking-wide text-gray-500">Files
+                                            <span class="text-xs font-medium uppercase tracking-wide text-slate-500">Files
                                                 Selected</span>
-                                            <p class="text-sm text-gray-900" data-summary="files-count">0 files</p>
+                                            <p class="text-sm text-slate-900 dark:text-slate-100"
+                                                data-summary="files-count">0 files</p>
                                         </div>
                                         <div>
-                                            <span class="text-xs font-medium uppercase tracking-wide text-gray-500">Post
+                                            <span class="text-xs font-medium uppercase tracking-wide text-slate-500">Post
                                                 Status</span>
-                                            <p class="text-sm text-gray-900" data-summary="status">Pending Review</p>
+                                            <p class="text-sm text-slate-900 dark:text-slate-100" data-summary="status">
+                                                Pending Review</p>
                                         </div>
                                         <div>
-                                            <span class="text-xs font-medium uppercase tracking-wide text-gray-500">Payment
+                                            <span
+                                                class="text-xs font-medium uppercase tracking-wide text-slate-500">Payment
                                                 Status</span>
-                                            <p class="text-sm text-gray-900" data-summary="payment-status">Free Post</p>
+                                            <p class="text-sm text-slate-900 dark:text-slate-100"
+                                                data-summary="payment-status">Free Post</p>
                                         </div>
                                     </div>
 
                                     <div class="mt-4">
-                                        <ul id="summaryFileList" class="space-y-2 text-sm text-gray-700"></ul>
+                                        <ul id="summaryFileList"
+                                            class="space-y-2 text-sm text-slate-600 dark:text-slate-300"></ul>
                                     </div>
                                 </div>
 
-                                <div class="rounded-lg border border-green-200 bg-green-50 p-6">
-                                    <p class="text-sm text-green-800">
-                                        Everything looks good! Submit your post and our moderators will review it shortly.
-                                    </p>
+                                <div
+                                    class="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-6 text-sm text-emerald-700 shadow-sm dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-200">
+                                    Everything looks great! Submit now and our moderators will take a quick look.
                                 </div>
 
-                                <div class="text-center">
+                                <div
+                                    class="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 sm:max-w-sm">By submitting, you
+                                        agree to our content guidelines and community policies.</p>
                                     <button type="submit"
-                                        class="px-8 py-3 font-medium text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
+                                        class="inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 px-8 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 sm:w-auto">
                                         Submit Post
                                     </button>
-                                    <p class="mt-3 text-xs text-gray-500">By submitting, you agree to our content
-                                        guidelines
-                                        and community policies.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Navigation Buttons -->
-                    <div class="flex justify-between px-8 py-6 border-t bg-gray-50" id="navigationControls">
+                    <div class="flex flex-col gap-3 border-t border-white/80 bg-white/80 px-6 py-6 backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/70 sm:flex-row sm:items-center sm:justify-between"
+                        id="navigationControls">
                         <button type="button" id="prevBtn"
-                            class="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium rounded-md transition duration-200">
+                            class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200/60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white dark:focus:ring-blue-400/30 sm:w-auto">
                             Previous
                         </button>
                         <button type="button" id="nextBtn"
-                            class="px-6 py-2 font-medium text-white transition duration-200 bg-blue-600 rounded-md hover:bg-blue-700">
+                            class="inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 sm:w-auto">
                             Next
                         </button>
                     </div>
