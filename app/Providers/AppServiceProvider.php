@@ -27,13 +27,26 @@ class AppServiceProvider extends ServiceProvider
     {
         User::observe(UserObserver::class);
 
-        View::composer('*', function ($view) {
-            try {
-                $view->with('siteSettings', SiteSetting::allCached());
-            } catch (Throwable $exception) {
-                $view->with('siteSettings', []);
+        $siteSettings = [];
+
+        try {
+            $siteSettings = SiteSetting::allCached();
+
+            if (! empty($siteSettings['site_name'])) {
+                config(['app.name' => $siteSettings['site_name']]);
             }
-        });
+
+            if (! empty($siteSettings['contact_email'])) {
+                config([
+                    'mail.from.address' => $siteSettings['contact_email'],
+                    'mail.from.name' => $siteSettings['site_name'] ?? config('mail.from.name'),
+                ]);
+            }
+        } catch (Throwable $exception) {
+            $siteSettings = [];
+        }
+
+        View::share('siteSettings', $siteSettings);
 
         View::composer('components.site.footer', function ($view) {
             try {

@@ -2,14 +2,16 @@
 
 namespace App\Filament\Resources\SiteSettings\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class SiteSettingForm
 {
@@ -72,13 +74,14 @@ class SiteSettingForm
                             FileUpload::make('media_upload')
                                 ->label('Upload Asset')
                                 ->disk('public')
-                                ->directory('site-settings')
+                                ->directory(fn (Get $get) => 'site-settings/' . now()->format('Y/m') . '/' . Str::slug($get('group') ?: 'general'))
                                 ->visibility('public')
+                                ->preserveFilenames()
                                 ->image()
+                                ->maxSize(2048)
                                 ->imagePreviewHeight('200')
                                 ->downloadable()
                                 ->openable()
-                                ->preserveFileNames()
                                 ->dehydrated(false)
                                 ->hidden(fn (callable $get) => $get('type') !== 'image')
                                 ->afterStateHydrated(function ($state, callable $set, callable $get) {
@@ -89,7 +92,7 @@ class SiteSettingForm
                                 ->afterStateUpdated(function ($state, callable $set) {
                                     $set('value', $state);
                                 })
-                                ->helperText('Upload PNG, JPG, or WEBP assets. The stored path is saved automatically.'),
+                                ->helperText('Upload PNG, JPG, or WEBP assets up to 2MB. Files are organized by setting group automatically.'),
                         ]),
                 ])
                     ->skippable()

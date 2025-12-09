@@ -2,6 +2,11 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Models\Category;
+use App\Models\Country;
+use App\Models\Section;
+use App\Models\State;
+use App\Models\City;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -9,6 +14,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\View as SchemaView;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
@@ -122,9 +128,11 @@ class PostForm
                         ]),
 
                     Step::make('Category & Media')
-                        ->description('Categorize and add photos')
+                        ->description('Categorize your post and add supporting visuals')
                         ->icon('heroicon-o-photo')
                         ->schema([
+                            SchemaView::make('filament.components.post-media-guidelines')
+                                ->columnSpanFull(),
                             Grid::make(2)
                                 ->schema([
                                     Select::make('section_id')
@@ -152,19 +160,20 @@ class PostForm
                                 ->minItems(1)
                                 ->maxItems(10)
                                 ->columns(1)
-                                ->helperText('Upload images or videos (max 10 files, up to 10MB each). Existing files remain unless you remove them.')
+                                ->helperText('Upload up to 10 files (images or videos, 10MB max each). Existing uploads stay attached unless you replace them.')
                                 ->schema([
                                     FileUpload::make('file_path')
                                         ->label('File')
                                         ->disk('public')
-                                        ->directory('posts')
+                                        ->directory(fn () => 'posts/' . now()->format('Y/m'))
                                         ->visibility('public')
-                                        ->preserveFileNames()
+                                        ->preserveFilenames()
                                         ->acceptedFileTypes([
                                             'image/*',
                                             'video/*',
                                         ])
                                         ->maxSize(10240)
+                                        ->imagePreviewHeight('180')
                                         ->downloadable()
                                         ->openable()
                                         ->columnSpanFull()
@@ -221,17 +230,43 @@ class PostForm
                             // Summary section
                             \Filament\Forms\Components\Placeholder::make('summary')
                                 ->label('Post Summary')
+                                ->columnSpanFull()
                                 ->content(function ($get) {
                                     $title = $get('title');
                                     $description = $get('description');
-                                    $country = $get('country_id') ? \App\Models\Country::find($get('country_id'))?->name : 'Not selected';
-                                    $category = $get('category_id') ? \App\Models\Category::find($get('category_id'))?->name : 'Not selected';
-                                    $mediaCount = is_array($get('media')) ? count($get('media')) : 0;
+
+                                    $country = $get('country_id') ? Country::find($get('country_id'))?->name : null;
+                                    $state = $get('state_id') ? State::find($get('state_id'))?->name : null;
+                                    $city = $get('city_id') ? City::find($get('city_id'))?->name : null;
+                                    $section = $get('section_id') ? Section::find($get('section_id'))?->name : null;
+                                    $category = $get('category_id') ? Category::find($get('category_id'))?->name : null;
+
+                                    $media = collect($get('media') ?? []);
+                                    $mediaCount = $media->count();
+
+                                    $contactEmail = $get('email');
+                                    $contactPhone = $get('phone');
+                                    $status = $get('status');
+                                    $paymentStatus = $get('payment_status');
 
                                     return view('filament.components.post-summary', compact(
-                                        'title', 'description', 'country', 'category', 'mediaCount'
+                                        'title',
+                                        'description',
+                                        'country',
+                                        'state',
+                                        'city',
+                                        'section',
+                                        'category',
+                                        'mediaCount',
+                                        'contactEmail',
+                                        'contactPhone',
+                                        'status',
+                                        'paymentStatus'
                                     ));
                                 }),
+
+                            SchemaView::make('filament.components.post-media-preview')
+                                ->columnSpanFull(),
                         ]),
                 ])
                     ->skippable()

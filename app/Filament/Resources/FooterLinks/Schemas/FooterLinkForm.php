@@ -64,14 +64,16 @@ class FooterLinkForm
                             FileUpload::make('icon_path')
                                 ->label('Icon / Image')
                                 ->disk('public')
-                                ->directory('footer-links')
+                                ->directory(fn () => 'footer-links/'.now()->format('Y/m'))
                                 ->visibility('public')
+                                ->preserveFilenames()
                                 ->image()
+                                ->maxSize(1024)
                                 ->imagePreviewHeight('150')
                                 ->downloadable()
                                 ->openable()
-                                ->helperText('Recommended for payment or social links.')
-                                ->hidden(fn (callable $get) => $get('type') !== 'payment'),
+                                ->helperText('Upload square PNG, JPG, or SVG icons. Social badges are supported.')
+                                ->hidden(fn (callable $get) => ! in_array($get('type'), ['payment', 'social'])),
                         ]),
                 ])
                     ->skippable()
